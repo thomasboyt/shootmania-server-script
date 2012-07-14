@@ -47,7 +47,6 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 **Misc:**
 
 * `/echo <message>` - Echo a message to the server (white text)
-* `/help` - Would list at least the player-facing commands - maybe have separate `/adminhelp`
 
 ### To-do
 
@@ -57,9 +56,7 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 * `/mapslist` (dump full maplist to console)
 * `/findmap` (search map names for a specific file)
 * `/ban <player>` and `/unban <player>`
-* `/playerslist` (dump full playerslist to console)
-* `/whois` (show login name for a nick)
-
+* `/help` - Would list at least the player-facing commands - maybe have separate `/adminhelp`
 
 ## In the wild
 

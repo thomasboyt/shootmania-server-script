@@ -13,8 +13,8 @@ class Window:
         return elem
 
     def render(self):
-        declaration = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>\n'
-        return declaration + et.tostring(self.root)
+        dec = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>\n'
+        return dec + et.tostring(self.root)
 
 
 if __name__ == '__main__':

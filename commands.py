@@ -1,5 +1,5 @@
 from command_helpers import ChatCommands
-from manialink import Window
+#from manialink import Window
 
 chat_commands = ChatCommands()
 
@@ -31,7 +31,7 @@ chat_commands.add('kick', kick, requires_admin=True, has_arg=True)
 
 
 def echo(server, state, caller, message):
-    server.ChatSendServerMessage("[Console] " + message)
+    server.ChatSendServerMessage("[Server] " + message)
 
 chat_commands.add('echo', echo, requires_admin=True, has_arg=True)
 

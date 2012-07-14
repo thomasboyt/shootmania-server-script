@@ -5,6 +5,8 @@ from command_helpers import CommandDoesNotExist
 from command_helpers import UserDoesNotHavePermissions, ExpectedArg
 from commands import chat_commands
 
+from helpers import sanitize
+
 
 class Manager:
     def __init__(self, config):
@@ -13,7 +15,8 @@ class Manager:
         self.state = {
             "players": {},
             "maps": [],
-            "current_map_index": 0
+            "current_map_index": 0,
+            "config": config
         }
         self.commands = chat_commands
 
@@ -21,6 +24,7 @@ class Manager:
 
         self.sm = Gbx.Client(self.config['address'])
         self.sm.init()
+        self.sm.SetApiVersion("2012-06-19")
         self.sm.Authenticate(self.config['username'], self.config['password'])
         self.sm.EnableCallbacks(True)
 
@@ -29,12 +33,13 @@ class Manager:
 
         # Callbacks
         self.sm.set_default_method(self.cb_default)
-        self.sm.add_method("TrackMania.PlayerChat", self.cb_player_chat)
-        self.sm.add_method("TrackMania.PlayerConnect", self.cb_player_connect)
-        self.sm.add_method("TrackMania.PlayerDisconnect",
+        self.sm.add_method("ManiaPlanet.PlayerChat", self.cb_player_chat)
+        self.sm.add_method("ManiaPlanet.PlayerConnect", self.cb_player_connect)
+        self.sm.add_method("ManiaPlanet.PlayerDisconnect",
             self.cb_player_disconnect)
-        #self.sm.add_method("ManiaPlanet.BeginMap", self.cb_begin_map)
-        self.sm.add_method("TrackMania.ChallengeListModified", self.cb_chlist_modified)
+        self.sm.add_method("ManiaPlanet.BeginMap", self.cb_begin_map)
+        #self.sm.add_method("ManiaPlanet.ChallengeListModified",
+        #    self.cb_chlist_modified)
 
     ### Internal ###
 
@@ -59,7 +64,7 @@ class Manager:
         maps = self.state["maps"]
         max_players = self.sm.GetMaxPlayers()['CurrentValue']
 
-        print self.sm.GetServerName()
+        print sanitize(self.sm.GetServerName())
         password = self.sm.GetServerPassword()
         if password:
             print "Current password: " + password
@@ -100,12 +105,20 @@ class Manager:
             self.sm.ChatSendServerMessageToLogin("Argument expected for " +
                 command, login)
 
+    def find_map(self, name):
+        # todo: partial matches, no map found exception
+        for map_item in self.state['maps']:
+            if map_item.short_name == name:
+                return map_item
+
     ### Callbacks ###
 
     def cb_player_connect(self, login, isspec):
         player_info = self.sm.GetPlayerInfo(login)
         self.state['players'][login] = Player(player_info, self)
-        print "%s %s connected as %s" % (self.role, self.login, self.nick)
+        player = self.state['players'][login]
+        print "%s %s connected as %s" % (player.role, player.login,
+            player.safe_nick)
 
     def cb_player_disconnect(self, login):
         role = self.state['players'][login].role
@@ -113,7 +126,7 @@ class Manager:
         print "%s %s left" % (role, login)
 
     def cb_player_chat(self, player_uid, player_login, text, isRegisteredCmd):
-        print player_login + ": " + text
+        print sanitize(player_login + ": " + text)
         if player_login in self.state['players']:
             if (text.startswith("/")):
                 if " " in text:
@@ -124,13 +137,21 @@ class Manager:
                 self.chat_command(player_login, command, arg)
 
     # using this as a placeholder until ManiaPlanet.BeginMap is implimented :S
-    def cb_chlist_modified(self, new_map_index, next_map_index, some_boolean):
-        self.state['current_map_index'] = new_map_index
-        name = self.state['maps'][new_map_index].short_name
-        print "*** Map rotated to %s at index %i ***" % (name, new_map_index)
+    #def cb_chlist_modified(self, new_map_index, next_map_index, some_boolean):
+    #    self.state['current_map_index'] = new_map_index
+    #    name = self.state['maps'][new_map_index].short_name
+    #    print "*** Map rotated to %s at index %i ***" % (name, new_map_index)
+
+    def cb_begin_map(self, map_info):
+        short_name = map_info['FileName'].rsplit('/')[-1][:-8]
+
+        new_map = self.find_map(short_name)
+        self.state['current_map_index'] = new_map.pos
+        print "*** changed map to %s at index %i" % (short_name,
+            self.state['current_map_index'])
 
     def cb_default(self, *args):
-        print args
+        # print args
         pass
 
 
@@ -138,6 +159,7 @@ class Player:
     def __init__(self, player_info, server):
         self.login = player_info['Login']
         self.nick = player_info['NickName']
+        self.safe_nick = sanitize(self.nick)
         self.id = player_info['PlayerId']
 
         if self.login in server.config['admin_logins']:
@@ -146,7 +168,8 @@ class Player:
             self.role = "Player"
 
     def __str__(self):
-        return "%s %s is connected as %s" % (self.role, self.login, self.nick)
+        return "%s %s is connected as %s" % (self.role, self.login,
+            self.safe_nick)
 
 
 class Map:
@@ -154,15 +177,13 @@ class Map:
         self.map_name = map_info['Name']
         self.file_name = map_info['FileName']
 
-        self.short_name = self.file_name.rsplit('/')[-1]
-        if ".Map.Gbx" in self.short_name:
-            self.short_name = self.short_name[:-8]
+        self.short_name = self.file_name.rsplit('/')[-1][:-8]
 
         self.map_type = map_info['MapType']
         self.pos = pos
 
     def __str__(self):
-        return "Map %s in position %i" % (self.short_name, self.pos)
+        return sanitize("Map %s in position %i" % (self.short_name, self.pos))
 
 
 if __name__ == '__main__':

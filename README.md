@@ -49,8 +49,6 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 * `/echo <message>` - Echo a message to the server (white text)
 * `/help` - Would list at least the player-facing commands - maybe have separate `/adminhelp`
 
-### Admin Commands
-
 ### To-do
 
 (in no particular order, will be done as I feel like it)

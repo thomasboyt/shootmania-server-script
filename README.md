@@ -25,30 +25,43 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 
 ## Commands
 
-* `/echo <message>` - Echo a message to the server (white text)
+### Player commands
+
+* `/nextmap` - See the next map in the rotation
+
+### Admin commands
+
+**Map management:**
+
+* `/skip` - Ends the current map and skips to the next one in the rotation
+
+**Player management:**
+
 * `/kick <player>` - Kick a player. Uses the login name of the player.
-* `/skip` - Ends the current map and skips to the next one in the rotation.
+
+**Server management:**
+
+* `/setservername <name>`
+* `/setpassword <password>` and `/clearpassword`
+
+**Misc:**
+
+* `/echo <message>` - Echo a message to the server (white text)
+* `/help` - Would list at least the player-facing commands - maybe have separate `/adminhelp`
+
+### Admin Commands
 
 ### To-do
 
 (in no particular order, will be done as I feel like it)
 
-**Map management:**
-
 * `/changemap <map>`
 * `/mapslist` (dump full maplist to console)
 * `/findmap` (search map names for a specific file)
-
-**Player management:**
-
 * `/ban <player>` and `/unban <player>`
 * `/playerslist` (dump full playerslist to console)
 * `/whois` (show login name for a nick)
 
-**Server management:**
-
-* `/setname <name>`
-* `/setpassword <password>` and `/clearpassword`
 
 ## In the wild
 

@@ -3,9 +3,9 @@ from command_helpers import ChatCommands
 chat_commands = ChatCommands()
 
 
-def nextmap(server, caller):
-    nextmap = server.GetNextMapInfo()['name']
-    server.ChatSendServerMessageToLogin("Next map " + nextmap, caller)
+def nextmap(server, state, caller):
+    nextmap = server.GetNextMapInfo()['Name']
+    server.ChatSendServerMessageToLogin("Next map: " + nextmap, caller)
 
 chat_commands.add("nextmap", nextmap, requires_admin=False, has_arg=False)
 
@@ -30,7 +30,7 @@ chat_commands.add('kick', kick, requires_admin=True, has_arg=True)
 
 
 def echo(server, state, caller, message):
-    server.ChatSendServerMessage(message)
+    server.ChatSendServerMessage("[Console] " + message)
 
 chat_commands.add('echo', echo, requires_admin=True, has_arg=True)
 

@@ -1,4 +1,5 @@
 from command_helpers import ChatCommands
+from manialink import Window
 
 chat_commands = ChatCommands()
 
@@ -48,7 +49,8 @@ def setpassword(server, state, caller, password):
     server.SetServerPasswordForSpectator(password)
     server.ChatSendServerMessage("Set password")
 
-chat_commands.add('setpassword', setpassword, requires_admin=True, has_arg=True)
+chat_commands.add('setpassword', setpassword, requires_admin=True,
+    has_arg=True)
 
 
 def clearpassword(server, state, caller):

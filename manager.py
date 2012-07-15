@@ -28,23 +28,30 @@ class Manager:
         self.sm.Authenticate(self.config['username'], self.config['password'])
         self.sm.EnableCallbacks(True)
 
-        self.sync()
-        dump_state(self.sm, self.state)
-
         #mode_loader(self.sm, self.state, self.state['server_config']['default_mode'])
 
-        # Placeholder configuration (see issue #1) (wow that makes me sound like Stan Lee)
+        # Placeholder configuration (see issue #1)
         server_cfg = self.state['server_config']
-        mode = server_cfg['default_mode']
-        mode_cfg = server_cfg['modes'][mode]['mode_settings']
+
+        name = server_cfg['name']
+        default_mode = server_cfg['default_mode']
+        if server_cfg['append_mode'] == True:
+            name = "%s (%s)" % (name, default_mode)
+
+        self.sm.SetServerName(name)
+        self.sm.SetServerPassword(server_cfg['password'])
+
+        mode_cfg = server_cfg['modes'][default_mode]['mode_settings']
         self.sm.SetModeScriptSettings(mode_cfg)
+
+        self.sync()
+        dump_state(self.sm, self.state)
 
         # Callbacks
         self.sm.set_default_method(self.cb_default)
         self.sm.add_method("ManiaPlanet.PlayerChat", self.cb_player_chat)
         self.sm.add_method("ManiaPlanet.PlayerConnect", self.cb_player_connect)
-        self.sm.add_method("ManiaPlanet.PlayerDisconnect",
-            self.cb_player_disconnect)
+        self.sm.add_method("ManiaPlanet.PlayerDisconnect", self.cb_player_disconnect)
         self.sm.add_method("ManiaPlanet.BeginMap", self.cb_begin_map)
 
     ### Internal ###

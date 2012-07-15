@@ -9,8 +9,7 @@ def nextmap(server, state, caller):
     server.ChatSendServerMessageToLogin("Next map: " + nextmap, caller)
 
 commands.append(
-    Command("nextmap", nextmap, requires_admin=False, has_arg=False)
-)
+    Command("nextmap", nextmap, requires_admin=False, has_arg=False))
 
 
 def findmap(server, state, caller, query):

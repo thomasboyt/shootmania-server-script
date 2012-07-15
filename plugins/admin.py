@@ -50,7 +50,7 @@ commands.append(
 
 def setservername(server, state, caller, name):
     server.SetServerName(name)
-    server.ChatSendServerMessage("Notice:Server renamed to " + name)
+    server.ChatSendServerMessage("Notice: Server renamed to " + name)
 
 commands.append(Command(
     'setservername', setservername, requires_admin=True, has_arg=True))
@@ -75,6 +75,7 @@ commands.append(Command(
 
 
 def autobalance(server, state, caller):
+    server.ChatSendServerMessage("Notice: %s balanced teams" % (caller))
     server.AutoTeamBalance()
 
 commands.append(Command(

@@ -115,3 +115,19 @@ def mode_loader(server, state, mode_name):
     print mode_cfg['mode_settings']
     server.SetModeScriptSettings(mode_cfg['mode_settings'])
     #print server.GetModeScriptSettings()
+
+
+def convert_to_api_type(value):
+    try:
+        value = int(value)
+    except ValueError:
+        if value.lower() == "true":
+            value = True
+        elif value.lower() == "false":
+            value = False
+        else:
+            try:
+                value = str(value)
+            except ValueError:
+                raise CouldNotConvertToApiType()
+    return value

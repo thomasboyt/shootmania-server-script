@@ -16,3 +16,7 @@ class MapNotFound(Exception):
 
 class ModeNotFound(Exception):
     pass
+
+
+class CouldNotConvertToApiType(Exception):
+    pass

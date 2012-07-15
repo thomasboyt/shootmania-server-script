@@ -124,6 +124,7 @@ class Manager:
             new_map.map_name))
 
     def cb_default(self, *args):
+        # useful debug tool if you want to see all callbacks:
         # print args
         pass
 
@@ -180,7 +181,7 @@ if __name__ == '__main__':
     except ValueError as e:
         print "Error parsing your config file:"
         print e
-        print "Check to see if you forgot a comma or a quotation or something! :]"
+        print "Check to see if you forgot a comma or a quotation or something!"
         quit()
 
     config_file.close()

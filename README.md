@@ -33,11 +33,14 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 
 ### Admin commands
 
-**Map management:**
+**Map/game management:**
 
 * `/skip` - Ends the current map and skips to the next one in the rotation
 * `/findmap <search>` - Find a map from a partial string match
 * `/changemap <map>` - Ends the current map and changes to the one you choose. Requires the full name of the map - use `/findmap` to find it.
+
+* `/getmodesettings` - Dumps all of the settings for the current game mode to your chat box. Press "C" to maximize the chat if you can't see all of them at once.
+* `/setmodesettings <key> <value>` - Set a setting for the game mode. Usually doesn't take affect until the next round, or sometimes match/map.
 
 **Player management:**
 
@@ -67,6 +70,7 @@ Currently used on the Goons server (US-Texas).
 ## What's next?
 
 * More commands
+* Autoscramble/balance on map change
 * Logging to a file(s)
 * Script for running as a background task
 * Allow admin commands to be run from console

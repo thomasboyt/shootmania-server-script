@@ -1,11 +1,10 @@
 #!/usr/bin/python
 
 import Gbx
-from command_helpers import CommandDoesNotExist
-from command_helpers import UserDoesNotHavePermissions, ExpectedArg
-from commands import chat_commands
 
-from helpers import sanitize
+from plugins.util.commands import command_loader
+from plugins.util.exceptions import *
+from plugins.util.helpers import *
 
 
 class Manager:
@@ -16,11 +15,12 @@ class Manager:
             "players": {},
             "maps": [],
             "current_map_index": 0,
-            "config": config
+            "server_config": config["server_config"]
         }
-        self.commands = chat_commands
 
-        self.config = config
+        self.config = config["tiny_config"]
+
+        self.commands = command_loader(self.config['plugins'])
 
         self.sm = Gbx.Client(self.config['address'])
         self.sm.init()
@@ -29,7 +29,12 @@ class Manager:
         self.sm.EnableCallbacks(True)
 
         self.sync()
-        self.dump_state()
+        dump_state(self.sm, self.state)
+
+        #print self.sm.GetScriptName()
+        #print self.sm.GetModeScriptSettings()
+
+        mode_loader(self.sm, self.state, self.state['server_config']['default_mode'])
 
         # Callbacks
         self.sm.set_default_method(self.cb_default)
@@ -38,8 +43,6 @@ class Manager:
         self.sm.add_method("ManiaPlanet.PlayerDisconnect",
             self.cb_player_disconnect)
         self.sm.add_method("ManiaPlanet.BeginMap", self.cb_begin_map)
-        #self.sm.add_method("ManiaPlanet.ChallengeListModified",
-        #    self.cb_chlist_modified)
 
     ### Internal ###
 
@@ -59,39 +62,6 @@ class Manager:
             pos = len(self.state['maps'])
             self.state['maps'].append(Map(self.state, map_info, pos))
 
-    def dump_state(self):
-        players = self.state["players"].values()
-        maps = self.state["maps"]
-        max_players = self.sm.GetMaxPlayers()['CurrentValue']
-
-        print sanitize(self.sm.GetServerName())
-        password = self.sm.GetServerPassword()
-        if password:
-            print "Current password: " + password
-
-        print "\nPlayers (%i / %i)" % (len(players), max_players)
-        print "--------------------------------------------------------------"
-        if (len(players) > 0):
-            for player in players:
-                print player
-        else:
-            print "No players connected."
-
-        print ""
-        print "Maps (%i total)" % (len(maps))
-        print "---------+----------------------------------------------------"
-        print "Position | Map name"
-        print "---------+----------------------------------------------------"
-        for map_item in maps:
-            string = "%i\t | %s" % (map_item.pos, map_item.short_name)
-            if map_item.pos == self.state["current_map_index"]:
-                string = "* " + string
-            else:
-                string = "  " + string
-            print string
-
-        print ""
-
     def chat_command(self, login, command, arg):
         try:
             self.commands.run(command, login, arg, self.sm, self.state)
@@ -105,25 +75,22 @@ class Manager:
             self.sm.ChatSendServerMessageToLogin("Argument expected for " +
                 command, login)
 
-    def find_map(self, name):
-        # todo: partial matches, no map found exception
-        for map_item in self.state['maps']:
-            if map_item.short_name == name:
-                return map_item
-
     ### Callbacks ###
 
     def cb_player_connect(self, login, isspec):
         player_info = self.sm.GetPlayerInfo(login)
         self.state['players'][login] = Player(player_info, self)
         player = self.state['players'][login]
-        print "%s %s connected as %s" % (player.role, player.login,
+        print ">> %s %s connected as %s" % (player.role, player.login,
             player.safe_nick)
 
     def cb_player_disconnect(self, login):
-        role = self.state['players'][login].role
-        del self.state['players'][login]
-        print "%s %s left" % (role, login)
+        try:
+            role = self.state['players'][login].role
+            print "<< %s %s left" % (role, login)
+            del self.state['players'][login]
+        except KeyError:
+            print "*** WARN: %s left; was not in players[]!" % (login)
 
     def cb_player_chat(self, player_uid, player_login, text, isRegisteredCmd):
         print sanitize(player_login + ": " + text)
@@ -136,19 +103,15 @@ class Manager:
                     arg = None
                 self.chat_command(player_login, command, arg)
 
-    # using this as a placeholder until ManiaPlanet.BeginMap is implimented :S
-    #def cb_chlist_modified(self, new_map_index, next_map_index, some_boolean):
-    #    self.state['current_map_index'] = new_map_index
-    #    name = self.state['maps'][new_map_index].short_name
-    #    print "*** Map rotated to %s at index %i ***" % (name, new_map_index)
-
     def cb_begin_map(self, map_info):
         short_name = map_info['FileName'].rsplit('/')[-1][:-8]
 
-        new_map = self.find_map(short_name)
+        new_map = find_map(short_name, self.state['maps'])
         self.state['current_map_index'] = new_map.pos
         print "*** changed map to %s at index %i" % (short_name,
             self.state['current_map_index'])
+        self.sm.ChatSendServerMessage("Welcome to %s" % (
+            new_map.map_name))
 
     def cb_default(self, *args):
         # print args
@@ -186,11 +149,30 @@ class Map:
         return sanitize("Map %s in position %i" % (self.short_name, self.pos))
 
 
+class Mode:
+    def __init__(self, name, settings, is_current=False):
+        self.name = name
+        self.settings = settings
+
+
 if __name__ == '__main__':
     import json
 
-    config_file = open('config.json')
-    config = json.loads(config_file.read())
+    try:
+        config_file = open('config.json')
+    except IOError:
+        print "Couldn't find your config.json file."
+        print "Have you created one yet? Check the readme for help."
+        quit()
+
+    try:
+        config = json.loads(config_file.read())
+    except ValueError as e:
+        print "Error parsing your config file:"
+        print e
+        print "Check to see if you forgot a comma or a quotation or something! :]"
+        quit()
+
     config_file.close()
 
     manager = Manager(config)

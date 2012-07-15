@@ -1,29 +1,19 @@
-class CommandDoesNotExist(Exception):
-    def __init__(self, command):
-        self.command = command
+import importlib
 
-
-class UserDoesNotHavePermissions(Exception):
-    def __init__(self, command, user):
-        self.command = command
-        self.user = user
-
-
-class ExpectedArg(Exception):
-    def __init(self, command):
-        self.command = command
+from exceptions import *
+from commands import *
 
 
 class ChatCommands:
-    def __init__(self):
-        self.commands = {}
+    def __init__(self, commands):
+        self.commands = commands
 
     def add(self, *args, **kwargs):
         self.commands[args[0]] = Command(*args, **kwargs)
 
-    def run(self, name, caller_name, arg, server, state):
+    def run(self, name, *args):
         if name in self.commands:
-            self.commands[name].run(caller_name, arg, server, state)
+            self.commands[name].run(*args)
         else:
             raise CommandDoesNotExist(name)
 
@@ -47,3 +37,12 @@ class Command:
                 else:
                     args.append(arg)
             self.function(*args)
+
+
+def command_loader(plugins):
+    commands = {}
+    for plugin in plugins:
+        plugin = importlib.import_module("plugins." + plugin)
+        for command in plugin.commands:
+            commands[command.name] = command
+    return ChatCommands(commands)

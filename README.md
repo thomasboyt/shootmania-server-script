@@ -42,6 +42,7 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 **Player management:**
 
 * `/kick <player>` - Kick a player. Uses the login name of the player.
+* `/autobalance` - Auto balances teams. Be warned, tho: auto balance is dumb as all hell, and if you have a two-slot different between teams (like 6v8), it's not going to do the sane thing of just taking one guy from the larger team and moving it over, it's going to move like 4 dudes around for no reason. What I'm saying is, don't use this unless teams are REALLY imbalanced or if it's the very start of the match and no one cares :)
 
 **Server management:**
 

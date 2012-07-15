@@ -1,8 +1,45 @@
 {
-    "address": "your-url-or-ip-here:5000",
+  "tiny_config": {
+    "address": "your-server5000",
     "username": "SuperAdmin",
-    "password": "",
+    "password": "your-password",
     "admin_logins": [
-      "your-login-here"
+      "your-name-here"
+    ],
+    "plugins": [
+      "general",
+      "admin"
     ]
+  },
+
+  "server_config": {
+    "name": "Server Name",
+    "append_mode": true,
+    "password": "",
+    "default_mode": "Jailbreak",
+
+    "modes": {
+
+      "BattleWaves": {
+        "mode_settings": {
+          "RoundsToWin": 3,
+          "RoundGapToWin": 1,
+          "RoundsLimit": 5
+        },
+        "match_settings": "MatchSettings/SMStormBattle.txt"
+      },
+
+      "Melee": {},
+      "Royal": {},
+
+      "Jailbreak": {
+        "mode_settings": {
+          "RoundsToWin": 3,
+          "RoundGapToWin": 1,
+          "RoundsLimit": 5
+        },
+        "match_settings": "MatchSettings/SMStormJailbreak.txt"
+      }
+    }
+  }
 }

@@ -31,10 +31,13 @@ class Manager:
         self.sync()
         dump_state(self.sm, self.state)
 
-        #print self.sm.GetScriptName()
-        #print self.sm.GetModeScriptSettings()
+        #mode_loader(self.sm, self.state, self.state['server_config']['default_mode'])
 
-        mode_loader(self.sm, self.state, self.state['server_config']['default_mode'])
+        # Placeholder configuration (see issue #1) (wow that makes me sound like Stan Lee)
+        server_cfg = self.state['server_config']
+        mode = server_cfg['default_mode']
+        mode_cfg = server_cfg['modes'][mode]['mode_settings']
+        self.sm.SetModeScriptSettings(mode_cfg)
 
         # Callbacks
         self.sm.set_default_method(self.cb_default)

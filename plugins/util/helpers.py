@@ -77,6 +77,7 @@ def dump_state(server, state):
 
 
 # Sets the mode and changes map to the proper rotation
+# All kinds of hella broken. See issue #1
 def mode_loader(server, state, mode_name):
     modes = state['server_config']['modes']
     if not mode_name in modes:

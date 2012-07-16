@@ -38,14 +38,14 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 * `/skip` - Ends the current map and skips to the next one in the rotation
 * `/findmap <search>` - Find a map from a partial string match
 * `/changemap <map>` - Ends the current map and changes to the one you choose. Requires the full name of the map - use `/findmap` to find it.
-
 * `/getmodesettings` - Dumps all of the settings for the current game mode to your chat box. Press "C" to maximize the chat if you can't see all of them at once.
 * `/setmodesettings <key> <value>` - Set a setting for the game mode. Usually doesn't take affect until the next round, or sometimes match/map.
 
 **Player management:**
 
 * `/kick <player>` - Kick a player. Uses the login name of the player.
-* `/autobalance` - Auto balances teams. Be warned, tho: auto balance is dumb as all hell, and if you have a two-slot different between teams (like 6v8), it's not going to do the sane thing of just taking one guy from the larger team and moving it over, it's going to move like 4 dudes around for no reason. What I'm saying is, don't use this unless teams are REALLY imbalanced or if it's the very start of the match and no one cares :)
+* `/autobalance` - Auto balances teams. Be warned, tho: auto balance is dumb as all hell, and if you have a two-slot different between teams (like 6v8), it's not going to do the sane thing of just taking one guy from the larger team and moving it over, it's going to respawn like four dudes for no reason.
+* `/scramble` - Randomly shuffles around the players on each team.
 
 **Server management:**
 
@@ -71,6 +71,7 @@ Currently used on the Goons server (US-Texas).
 
 * More commands
 * Autoscramble/balance on map change
+* Way for plugins to hook into callbacks
 * Logging to a file(s)
 * Script for running as a background task
 * Allow admin commands to be run from console

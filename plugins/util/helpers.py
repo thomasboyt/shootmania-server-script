@@ -1,5 +1,6 @@
 import string
 import xmlrpclib
+import time
 
 from exceptions import *
 
@@ -28,14 +29,17 @@ def search_maps(search, maps):
         raise MapNotFound()
 
 
-def log(print_string, should_print=True):
+def log(print_string, should_print=True, has_timestamp=True):
     # sanitize doesn't work against objects that can be represented as string
     # (such as map and player), but those are sanitized already so it's no big deal
     # just be careful when concating safe and unsafe strings!
     if type(print_string) == str:
-        sanitize(print_string)
+        print_string = sanitize(print_string)
     # to-do: actually log to a file here
     if should_print == True:
+        timestamp = time.strftime("[%H:%M:%S] ")
+        if has_timestamp:
+            print_string = str(timestamp) + print_string
         print print_string
 
 
@@ -48,32 +52,31 @@ def dump_state(server, state):
     maps = state["maps"]
     max_players = server.GetMaxPlayers()['CurrentValue']
 
-    log(server.GetServerName())
+    log(server.GetServerName(), has_timestamp=False)
     password = server.GetServerPassword()
     if password:
-        log("Current password: " + password)
+        log("Current password: " + password, has_timestamp=False)
 
-    log("\nPlayers (%i / %i)" % (len(players), max_players))
-    log("--------------------------------------------------------------")
+    log("\nPlayers (%i / %i)" % (len(players), max_players), has_timestamp=False)
+    log("--------------------------------------------------------------", has_timestamp=False)
     if (len(players) > 0):
         for player in players:
-            log(player)
+            log("%s %s is connected as %s" % (player.role, player.login, player.safe_nick), has_timestamp=False)
     else:
         log("No players connected.")
 
-    log("")
-    log("Maps (%i total)" % (len(maps)))
-    log("---------+----------------------------------------------------")
-    log("Position | Map name")
-    log("---------+----------------------------------------------------")
+    log("\nMaps (%i total)" % (len(maps)), has_timestamp=False)
+    log("---------+----------------------------------------------------", has_timestamp=False)
+    log("Position | Map name", has_timestamp=False)
+    log("---------+----------------------------------------------------", has_timestamp=False)
     for map_item in maps:
         log_string = "%i\t | %s" % (map_item.pos, map_item.short_name)
         if map_item.pos == state["current_map_index"]:
             log_string = "* " + log_string
         else:
             log_string = "  " + log_string
-        log(log_string)
-    log("")
+        log(log_string, has_timestamp=False)
+    log("", has_timestamp=False)
 
 
 # Sets the mode and changes map to the proper rotation

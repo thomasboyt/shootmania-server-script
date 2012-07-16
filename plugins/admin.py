@@ -1,6 +1,7 @@
 from util.commands import *
 from util.helpers import *
 from xmlrpclib import Fault
+from scrambler import scrambler
 
 commands = []
 
@@ -10,8 +11,8 @@ def skip(server, state, caller):
     server.ChatSendServerMessage("Notice: %s ended map" % (caller_nick))
     server.NextMap()
 
-commands.append(
-    Command('skip', skip, requires_admin=True, has_arg=False))
+commands.append(Command(
+    'skip', skip, requires_admin=True, has_arg=False))
 
 
 def changemap(server, state, caller, name):
@@ -40,15 +41,15 @@ def changemap(server, state, caller, name):
         server.ChatSendServerMessageToLogin("No map found matching: "
             + name, caller)
 
-commands.append(
-    Command("changemap", changemap, requires_admin=True, has_arg=True))
+commands.append(Command(
+    "changemap", changemap, requires_admin=True, has_arg=True))
 
 
 def echo(server, state, caller, message):
     server.ChatSendServerMessage("[Server] " + message)
 
-commands.append(
-    Command('echo', echo, requires_admin=True, has_arg=True))
+commands.append(Command(
+    'echo', echo, requires_admin=True, has_arg=True))
 
 
 def kick(server, state, caller, target):
@@ -62,8 +63,8 @@ def kick(server, state, caller, target):
         # some day will add support for kicking nicks
         server.ChatSendServerMessageToLogin("Name not found", caller)
 
-commands.append(
-    Command('kick', kick, requires_admin=True, has_arg=True))
+commands.append(Command(
+    'kick', kick, requires_admin=True, has_arg=True))
 
 
 def setservername(server, state, caller, name):
@@ -81,8 +82,8 @@ def setpassword(server, state, caller, password):
     server.ChatSendServerMessageToLogin("Notice: You have set the password to %s" %
         (password), caller)
 
-commands.append(Command
-    ('setpassword', setpassword, requires_admin=True, has_arg=True))
+commands.append(Command(
+    'setpassword', setpassword, requires_admin=True, has_arg=True))
 
 
 def getpassword(server, state, caller):
@@ -103,11 +104,19 @@ commands.append(Command(
 
 
 def autobalance(server, state, caller):
-    server.ChatSendServerMessage("Notice: %s balanced teams" % (caller))
+    caller_nick = state['players'][caller].nick
+    server.ChatSendServerMessage("Notice: %s balanced teams" % (caller_nick))
     server.AutoTeamBalance()
 
 commands.append(Command(
     'autobalance', autobalance, requires_admin=True, has_arg=False))
+
+
+def scramble(server, state, caller):
+    scrambler(server)
+
+commands.append(Command(
+    'scramble', scramble, requires_admin=True, has_arg=False))
 
 
 def dumpmodesettings(server, state, caller):

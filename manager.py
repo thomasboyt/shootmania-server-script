@@ -89,21 +89,29 @@ class Manager:
 
     def cb_player_connect(self, login, isspec):
         player_info = self.sm.GetPlayerInfo(login)
+
+        # this seems to be happening when I scramble sometimes?
+        if type(player_info) == bool:
+            log("*** WARN: For some reason got a bool for player_info.")
+            log("player_info = " + str(player_info) + "")
+            log("isspec = " + str(isspec))
+            return
+
         self.state['players'][login] = Player(player_info, self)
         player = self.state['players'][login]
-        print ">> %s %s connected as %s" % (player.role, player.login,
-            player.safe_nick)
+        log(">> %s %s connected as %s" % (player.role, player.login,
+            player.safe_nick))
 
     def cb_player_disconnect(self, login):
         try:
             role = self.state['players'][login].role
-            print "<< %s %s left" % (role, login)
+            log("<< %s %s left" % (role, login))
             del self.state['players'][login]
         except KeyError:
-            print "*** WARN: %s left; was not in players[]!" % (login)
+            log("*** WARN: %s left; was not in players[]!" % (login))
 
     def cb_player_chat(self, player_uid, player_login, text, isRegisteredCmd):
-        print sanitize(player_login + ": " + text)
+        log(player_login + ": " + text)
         if player_login in self.state['players']:
             if (text.startswith("/")):
                 if " " in text:
@@ -118,10 +126,8 @@ class Manager:
 
         new_map = find_map(short_name, self.state['maps'])
         self.state['current_map_index'] = new_map.pos
-        print "*** changed map to %s at index %i" % (short_name,
-            self.state['current_map_index'])
-        self.sm.ChatSendServerMessage("Welcome to %s" % (
-            new_map.map_name))
+        log("*** changed map to %s at index %i" % (short_name, self.state['current_map_index']))
+        self.sm.ChatSendServerMessage("Welcome to %s" % (new_map.map_name))
 
     def cb_default(self, *args):
         # useful debug tool if you want to see all callbacks:
@@ -141,10 +147,6 @@ class Player:
         else:
             self.role = "Player"
 
-    def __str__(self):
-        return "%s %s is connected as %s" % (self.role, self.login,
-            self.safe_nick)
-
 
 class Map:
     def __init__(self, state, map_info, pos):
@@ -155,9 +157,6 @@ class Map:
 
         self.map_type = map_info['MapType']
         self.pos = pos
-
-    def __str__(self):
-        return sanitize("Map %s in position %i" % (self.short_name, self.pos))
 
 
 class Mode:

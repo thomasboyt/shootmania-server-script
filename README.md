@@ -6,20 +6,7 @@ This script is basically not safe for human consumption right now. Don't worry, 
 
 ## Config
 
-Create a config.json file:
-
-```
-{
-    "address": "YOUR_ADDRESS:5000",
-    "username": "SuperAdmin",
-    "password": "PASSWORD",
-    "admin_logins": [
-      "YOUR_USERNAME", "YOUR_BROS_USERNAME"
-    ]
-}
-```
-
-Currently, there are two levels of commands: Admins and Players. To add an admin, add their login name (not their in-game nickname, of course!) to the "admin_logins" list.
+[todo: this section. just take a look at config.example.json; fairly self-explanitory]
 
 ## Running
 
@@ -39,7 +26,7 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 * `/findmap <search>` - Find a map from a partial string match
 * `/changemap <map>` - Ends the current map and changes to the one you choose. Requires the full name of the map - use `/findmap` to find it.
 * `/getmodesettings` - Dumps all of the settings for the current game mode to your chat box. Press "C" to maximize the chat if you can't see all of them at once.
-* `/setmodesettings <key> <value>` - Set a setting for the game mode. Usually doesn't take affect until the next round, or sometimes match/map.
+* `/setmodesettings <key> <value>` - Set a setting for the game mode. Usually doesn't take effect until the next round, or sometimes match/map.
 
 **Player management:**
 

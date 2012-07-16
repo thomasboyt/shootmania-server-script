@@ -2,9 +2,11 @@
 
 import Gbx
 
-from plugins.util.commands import command_loader
+#from plugins.util.commands import command_loader
+from plugins.util.plugin import plugin_loader
 from plugins.util.exceptions import *
 from plugins.util.helpers import *
+#from plugins.scrambler import scrambler
 
 
 class Manager:
@@ -20,13 +22,15 @@ class Manager:
 
         self.config = config["tiny_config"]
 
-        self.commands = command_loader(self.config['plugins'])
-
+        #self.commands = command_loader(self.config['plugins'])
+        
         self.sm = Gbx.Client(self.config['address'])
         self.sm.init()
         self.sm.SetApiVersion("2012-06-19")
         self.sm.Authenticate(self.config['username'], self.config['password'])
         self.sm.EnableCallbacks(True)
+
+        self.command_handler, self.cb_handler = plugin_loader(self.sm, config['plugins'])
 
         #mode_loader(self.sm, self.state, self.state['server_config']['default_mode'])
 
@@ -40,6 +44,7 @@ class Manager:
 
         self.sm.SetServerName(name)
         self.sm.SetServerPassword(server_cfg['password'])
+        self.sm.SetServerPasswordForSpectator(server_cfg['password'])
 
         mode_cfg = server_cfg['modes'][default_mode]['mode_settings']
         self.sm.SetModeScriptSettings(mode_cfg)
@@ -49,10 +54,10 @@ class Manager:
 
         # Callbacks
         self.sm.set_default_method(self.cb_default)
-        self.sm.add_method("ManiaPlanet.PlayerChat", self.cb_player_chat)
-        self.sm.add_method("ManiaPlanet.PlayerConnect", self.cb_player_connect)
-        self.sm.add_method("ManiaPlanet.PlayerDisconnect", self.cb_player_disconnect)
-        self.sm.add_method("ManiaPlanet.BeginMap", self.cb_begin_map)
+        self.cb_handler.add("ManiaPlanet.PlayerChat", self.cb_player_chat)
+        self.cb_handler.add("ManiaPlanet.PlayerConnect", self.cb_player_connect)
+        self.cb_handler.add("ManiaPlanet.PlayerDisconnect", self.cb_player_disconnect)
+        self.cb_handler.add("ManiaPlanet.BeginMap", self.cb_begin_map)
 
     ### Internal ###
 
@@ -74,7 +79,7 @@ class Manager:
 
     def chat_command(self, login, command, arg):
         try:
-            self.commands.run(command, login, arg, self.sm, self.state)
+            self.command_handler.run(command, login, arg, self.state)
         except CommandDoesNotExist:
             self.sm.ChatSendServerMessageToLogin("Command " + command +
                 " does not exist", login)

@@ -41,5 +41,12 @@
         "match_settings": "MatchSettings/SMStormJailbreak.txt"
       }
     }
+  },
+  "plugins": {
+    "general": {},
+    "admin": {},
+    "scrambler": {
+      "auto_scramble_enabled": false
+    }
   }
 }

@@ -9,7 +9,8 @@ class ManiaLink:
 
         self.manialink = Template(manialink_src)
 
-    def render(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs):
+        print self.manialink.render(*args, **kwargs)
         return self.manialink.render(*args, **kwargs)
 
 if __name__ == '__main__':

@@ -8,9 +8,10 @@ class Admin(Plugin):
         super(Admin, self).__init__(server, config)
 
         self.add_command("changemap", self.com_change_map, requires_admin=True, has_arg=True)
-        self.add_command("skip", self.com_skip_map, requires_admin=True, has_arg=True)
+        self.add_command("skip", self.com_skip_map, requires_admin=True, has_arg=False)
         self.add_command("getmodesettings", self.com_get_mode_settings, requires_admin=True, has_arg=False)
         self.add_command("setmodesetting", self.com_set_mode_setting, requires_admin=True, has_arg=True)
+        #self.add_command("restartmap", self.restart_map, requires_admin=True, has_arg=False)
 
         self.add_command("setservername", self.com_set_server_name, requires_admin=True, has_arg=True)
         self.add_command("setpassword", self.com_set_password, requires_admin=True, has_arg=True)
@@ -19,6 +20,10 @@ class Admin(Plugin):
 
         self.add_command("autobalance", self.com_autobalance, requires_admin=True, has_arg=False)
         self.add_command("kick", self.com_kick, requires_admin=True, has_arg=True)
+        self.add_command("ban", self.com_ban, requires_admin=True, has_arg=True)
+        #self.add_command("unban", self.com_unban, requires_admin=True, has_arg=True)
+        #self.add_command("clearbands", self.clear_bans, requires_admin=True, has_arg=False)
+        #self.add_command("getbans", self_get_ban_list, requires_admin=True, has_arg=False)
 
         self.add_command("echo", self.com_echo, requires_admin=True, has_arg=True)
 
@@ -52,8 +57,7 @@ class Admin(Plugin):
 
                 server.ChatSendServerMessageToLogin("Did you mean: %s?" % (map_list), caller)
         except MapNotFound:
-            server.ChatSendServerMessageToLogin("No map found matching: "
-                + name, caller)
+            server.ChatSendServerMessageToLogin("No map found matching: " + name, caller)
 
     # When ManiaLink support is implimented, this will be replaced with a nice
     # little popup. Until then...
@@ -123,13 +127,26 @@ class Admin(Plugin):
         server = self.server
         if target in state['players']:
             caller_nick = state['players'][caller].nick
-            msg = "%s (%s) was kicked by %s" % (state['players'][target].nick,
-                target, caller_nick)
+            msg = "%s (%s) was kicked by %s" % (state['players'][target].nick, target, caller_nick)
             server.ChatSendServerMessage(msg)
             server.Kick(target)
         else:
             # some day will add support for kicking nicks
             server.ChatSendServerMessageToLogin("Name not found", caller)
+
+    def com_ban(self, state, caller, target):
+        server = self.server
+        if target in state['players']:
+            caller_nick = state['players'][caller].nick
+            msg = "%s (%s) was banned by %s" % (state['players'][target].nick, target, caller_nick)
+            server.ChatSendServerMessage(msg)
+            server.Ban(target)
+        else:
+            server.ChatSendServerMessageToLogin("Name not found", caller)
+
+    # needs testing:
+    # - what fault code does it produce when trying to unban a player who isn't in the ban list?
+    #def com_unban(self, state, caller, target)
 
     ### Misc. ###
 

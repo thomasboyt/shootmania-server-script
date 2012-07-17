@@ -2,11 +2,9 @@
 
 import Gbx
 
-#from plugins.util.commands import command_loader
 from plugins.util.plugin import plugin_loader
 from plugins.util.exceptions import *
 from plugins.util.helpers import *
-#from plugins.scrambler import scrambler
 
 
 class Manager:
@@ -21,8 +19,6 @@ class Manager:
         }
 
         self.config = config["tiny_config"]
-
-        #self.commands = command_loader(self.config['plugins'])
         
         self.sm = Gbx.Client(self.config['address'])
         self.sm.init()
@@ -46,8 +42,11 @@ class Manager:
         self.sm.SetServerPassword(server_cfg['password'])
         self.sm.SetServerPasswordForSpectator(server_cfg['password'])
 
-        mode_cfg = server_cfg['modes'][default_mode]['mode_settings']
-        self.sm.SetModeScriptSettings(mode_cfg)
+        try:
+            mode_cfg = server_cfg['modes'][default_mode]['mode_settings']
+            self.sm.SetModeScriptSettings(mode_cfg)
+        except KeyError:
+            pass
 
         self.sync()
         dump_state(self.sm, self.state)

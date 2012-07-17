@@ -1,5 +1,9 @@
 config.json
+plugins/goons.py
+plugins/manialinks/goon/
 
+
+# below autogenned from github
 
 *.py[co]
 

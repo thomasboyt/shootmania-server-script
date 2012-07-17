@@ -32,8 +32,13 @@ class Admin(Plugin):
     def com_skip_map(self, state, caller):
         server = self.server
         caller_nick = state['players'][caller].nick
-        server.ChatSendServerMessage("Notice: %s ended map" % (caller_nick))
+        server.ChatSendServerMessage("Notice: %s ended map." % (caller_nick))
         server.NextMap()
+
+    def com_restart_map(self, state, caller):
+        caller_nick = state['players'][caller].nick
+        self.server.ChatSendServerMessage("Notice: %s restarted the match." % (caller_nick))
+        self.server.RestartMap()
 
     def com_change_map(self, state, caller, name):
         server = self.server

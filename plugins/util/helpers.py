@@ -31,15 +31,13 @@ def search_maps(search, maps):
 
 def log(print_string, should_print=True, has_timestamp=True):
     # sanitize doesn't work against objects that can be represented as string
-    # (such as map and player), but those are sanitized already so it's no big deal
-    # just be careful when concating safe and unsafe strings!
     if type(print_string) == str:
         print_string = sanitize(print_string)
     # to-do: actually log to a file here
-    if should_print == True:
+    if has_timestamp:
         timestamp = time.strftime("[%H:%M:%S] ")
-        if has_timestamp:
-            print_string = str(timestamp) + print_string
+        print_string = str(timestamp) + print_string
+    if should_print == True:
         print print_string
 
 

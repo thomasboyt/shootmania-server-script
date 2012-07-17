@@ -1,23 +1,17 @@
-import xml.etree.ElementTree as et
+from jinja2 import Template
 
 
-class Window:
-    def __init__(self):
-        self.root = et.Element("manialink")
-        self.root.set("version", "1")
+class ManiaLink:
+    def __init__(self, path):
+        linkfile = open(path)
+        manialink_src = linkfile.read()
+        linkfile.close()
 
-    def addElement(self, parent, element, **kargs):
-        elem = et.SubElement(parent, element)
-        for key, val in kargs.iteritems():
-            elem.set(key, val)
-        return elem
+        self.manialink = Template(manialink_src)
 
-    def render(self):
-        dec = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>\n'
-        return dec + et.tostring(self.root)
-
+    def render(self, *args, **kwargs):
+        return self.manialink.render(*args, **kwargs)
 
 if __name__ == '__main__':
-    test_window = Window()
-    test_window.addElement(test_window.root, "label", text="Test label text")
-    test_window.render()
+    test_link = ManiaLink("../manialinks/render_test.xml")
+    print test_link.render(url="test")

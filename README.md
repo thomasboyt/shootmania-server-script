@@ -47,7 +47,7 @@ Just `git clone` the repo to your ManiaPlanet directory, `chmod 777 manager.py`,
 
 (in no particular order, will be done as I feel like it)
 
-* `/ban <player>` and `/unban <player>`
+* Various ban-related commands
 * `/help` - Would list at least the player-facing commands - maybe have separate `/adminhelp`
 
 ## In the wild
@@ -57,8 +57,6 @@ Currently used on the Goons server (US-Texas).
 ## What's next?
 
 * More commands
-* Autoscramble/balance on map change
-* Way for plugins to hook into callbacks
 * Logging to a file(s)
 * Script for running as a background task
 * Allow admin commands to be run from console

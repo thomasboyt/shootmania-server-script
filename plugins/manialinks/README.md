@@ -1,0 +1,1 @@
+Put your plugin's Manialinks in its own folder here (i.e. `plugins/your-plugin-name/manialink.xml`)

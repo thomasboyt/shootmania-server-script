@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <manialink version="1">
-  <quad posn="0 0" scalen="0 0" image="{{url}}" valign="center" halign="center" />
+  <quad posn="0 0" scalen="{{scalen}}|default('0 0')" image="{{url}}" valign="center" halign="center" />
 </manialink>

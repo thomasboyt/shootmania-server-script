@@ -1,3 +1,5 @@
+# if your plugin uses a ManiaLink template, make sure you tell users to install
+# jinja2 via "pip install jinja2"
 from jinja2 import Template
 
 
@@ -10,9 +12,4 @@ class ManiaLink:
         self.manialink = Template(manialink_src)
 
     def __call__(self, *args, **kwargs):
-        print self.manialink.render(*args, **kwargs)
         return self.manialink.render(*args, **kwargs)
-
-if __name__ == '__main__':
-    test_link = ManiaLink("../manialinks/render_test.xml")
-    print test_link.render(url="test")

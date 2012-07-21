@@ -90,7 +90,7 @@ def mode_loader(server, state, mode_name):
     next_mode = server.GetScriptName()["NextValue"]
     if next_mode == mode_file:
         log("*** WARN: Script was already set as the next mode!")
-        #return
+        return
 
     print server.GetModeScriptInfo()
 
@@ -113,9 +113,7 @@ def mode_loader(server, state, mode_name):
 
     server.NextMap()
 
-    print mode_cfg['mode_settings']
     server.SetModeScriptSettings(mode_cfg['mode_settings'])
-    #print server.GetModeScriptSettings()
 
 
 def convert_to_api_type(value):

@@ -1,7 +1,7 @@
 config.json
 plugins/goons.py
 plugins/manialinks/goon/
-
+db/
 
 # below autogenned from github
 

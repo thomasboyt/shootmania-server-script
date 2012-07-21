@@ -18,6 +18,8 @@ class Admin(Plugin):
         self.add_command("getpassword", self.com_get_password, requires_admin=True, has_arg=False)
         self.add_command("clearpassword", self.com_clear_password, requires_admin=True, has_arg=False)
 
+        #self.add_command("setmaxplayers", self_com_set_max_players, requires_admin=True, has_arg=True)
+
         self.add_command("autobalance", self.com_autobalance, requires_admin=True, has_arg=False)
         self.add_command("kick", self.com_kick, requires_admin=True, has_arg=True)
         self.add_command("ban", self.com_ban, requires_admin=True, has_arg=True)

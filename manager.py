@@ -80,14 +80,11 @@ class Manager:
         try:
             self.command_handler.run(command, login, arg, self.state)
         except CommandDoesNotExist:
-            self.sm.ChatSendServerMessageToLogin("Command " + command +
-                " does not exist", login)
+            self.sm.ChatSendServerMessageToLogin("Command " + command + " does not exist", login)
         except UserDoesNotHavePermissions:
-            self.sm.ChatSendServerMessageToLogin("You do not have the" +
-                " permission to run " + command, login)
+            self.sm.ChatSendServerMessageToLogin("You do not have the" + " permission to run " + command, login)
         except ExpectedArg:
-            self.sm.ChatSendServerMessageToLogin("Argument expected for " +
-                command, login)
+            self.sm.ChatSendServerMessageToLogin("Argument expected for " + command, login)
 
     ### Callbacks ###
 
@@ -131,7 +128,6 @@ class Manager:
         new_map = find_map(short_name, self.state['maps'])
         self.state['current_map_index'] = new_map.pos
         log("*** changed map to %s at index %i" % (short_name, self.state['current_map_index']))
-        self.sm.ChatSendServerMessage("Welcome to %s" % (new_map.map_name))
 
     def cb_default(self, *args):
         # useful debug tool if you want to see all callbacks:
@@ -141,7 +137,12 @@ class Manager:
 
 class Player:
     def __init__(self, player_info, server):
-        self.login = player_info['Login']
+        try:
+            self.login = player_info['Login']
+        except ValueError:
+            print player_info
+            log("***ERROR: no Login name found in player info!")
+            quit()
         self.nick = player_info['NickName']
         self.safe_nick = sanitize(self.nick)
         self.id = player_info['PlayerId']
@@ -171,6 +172,14 @@ class Mode:
 
 if __name__ == '__main__':
     import json
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--name', metavar="server name", type=str, help="Server name")
+    parser.add_argument('--password', metavar="password", type=str, help="Server password")
+    parser.add_argument('--mode', metavar='mode', type=str, help="Default mode for the server")
+
+    args = parser.parse_args()
 
     try:
         config_file = open('config.json')
@@ -188,6 +197,14 @@ if __name__ == '__main__':
         quit()
 
     config_file.close()
+
+    #todo: make an args vs. config key dictionary, iterate over that
+    if args.name:
+        config['server_config']['name'] = args.name
+    if args.password:
+        config['server_config']['password'] = args.password
+    if args.mode:
+        config['server_config']['default_mode'] = args.mode
 
     manager = Manager(config)
     while 1:

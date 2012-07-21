@@ -10,6 +10,7 @@ class ChatCommands:
         self.commands[args[0]] = Command(*args, **kwargs)
 
     def run(self, name, *args):
+        name = name.lower()
         if name in self.commands:
             self.commands[name].run(*args)
         else:

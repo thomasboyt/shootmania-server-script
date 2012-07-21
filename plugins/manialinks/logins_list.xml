@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<manialink version="1">
+  <quad posn="0 0 -1" scalen="0 0" valign="center" halign="center" bgcolor="0009" />
+  {% for player in players %}
+    <label posn="-48 {{(48) + (-loop.index0*6)}}" text="{{player.login}} = {{player.nick}}" />
+  {% endfor %}
+</manialink>

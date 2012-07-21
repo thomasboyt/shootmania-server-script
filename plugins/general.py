@@ -1,8 +1,6 @@
 from util.helpers import *
 from util.plugin import Plugin
 
-commands = []
-
 
 class General(Plugin):
     def __init__(self, server, config):
@@ -10,6 +8,8 @@ class General(Plugin):
 
         self.add_command("nextmap", self.com_nextmap, requires_admin=False, has_arg=False)
         self.add_command("findmap", self.com_findmap, requires_admin=False, has_arg=True)
+
+        self.add_callback("ManiaPlanet.BeginMap", self.cb_map_greeting)
 
     def com_nextmap(self, state, caller):
         server = self.server
@@ -31,5 +31,8 @@ class General(Plugin):
         except MapNotFound:
             server.ChatSendServerMessageToLogin("No maps found matching query: "
                 + query, caller)
+
+    def cb_map_greeting(self, map_info):
+        self.server.ChatSendServerMessage("Welcome to %s" % (map_info['Name']))
 
 ExportPlugin = General

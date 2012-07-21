@@ -4,11 +4,7 @@
     "username": "SuperAdmin",
     "password": "your-password",
     "admin_logins": [
-      "your-name-here"
-    ],
-    "plugins": [
-      "general",
-      "admin"
+      "your-login-here"
     ]
   },
 
@@ -39,7 +35,9 @@
           "RoundsLimit": 5
         },
         "match_settings": "MatchSettings/SMStormJailbreak.txt"
-      }
+      },
+
+      "Elite": {}
     }
   },
   "plugins": {

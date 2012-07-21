@@ -34,7 +34,6 @@ class MapRating(Plugin):
 
         try:
             self.map_votes = json.loads(self.map_file.read())
-            print self.map_votes
         except ValueError:
             log("*** WARN: Could not parse map_votes JSON. File may be empty or corrupted.")
             self.map_votes = {}

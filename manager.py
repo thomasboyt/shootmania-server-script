@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import Gbx
+from collections import OrderedDict
 
 from plugins.util.plugin import plugin_loader
 from plugins.util.exceptions import *
@@ -189,7 +190,7 @@ if __name__ == '__main__':
         quit()
 
     try:
-        config = json.loads(config_file.read())
+        config = json.loads(config_file.read(), object_pairs_hook=OrderedDict)
     except ValueError as e:
         print "Error parsing your config file:"
         print e

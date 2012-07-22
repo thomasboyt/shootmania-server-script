@@ -5,7 +5,8 @@
     "password": "your-password",
     "admin_logins": [
       "your-login-here"
-    ]
+    ],
+    "server_login": "your-servers-login"
   },
 
   "server_config": {
@@ -25,9 +26,6 @@
         "match_settings": "MatchSettings/SMStormBattle.txt"
       },
 
-      "Melee": {},
-      "Royal": {},
-
       "Jailbreak": {
         "mode_settings": {
           "RoundsToWin": 3,
@@ -36,8 +34,6 @@
         },
         "match_settings": "MatchSettings/SMStormJailbreak.txt"
       },
-
-      "Elite": {}
     }
   },
   "plugins": {

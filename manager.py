@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import Gbx
+import logging
 from collections import OrderedDict
 
 from plugins.util.plugin import plugin_loader
@@ -92,23 +93,23 @@ class Manager:
 
         # this seems to be happening when I scramble sometimes?
         if type(player_info) == bool:
-            log("*** WARN: For some reason got a bool for player_info.")
-            log("player_info = " + str(player_info) + "")
-            log("isspec = " + str(isspec))
+            log("For some reason got a bool for player_info.", log_type="error")
+            log("player_info = " + str(player_info) + "", log_type="debug")
+            log("isspec = " + str(isspec), log_type="debug")
             return
 
         self.state['players'][login] = Player(player_info, self)
         player = self.state['players'][login]
         log(">> %s %s connected as %s" % (player.role, player.login,
-            player.safe_nick))
+            player.safe_nick), log_type="info")
 
     def cb_player_disconnect(self, login):
         try:
             role = self.state['players'][login].role
-            log("<< %s %s left" % (role, login))
+            log("<< %s %s left" % (role, login), log_type="info")
             del self.state['players'][login]
         except KeyError:
-            log("*** WARN: %s left; was not in players[]!" % (login))
+            log("%s left; was not in players[]!" % (login), log_type="error")
 
     def cb_player_chat(self, player_uid, player_login, text, isRegisteredCmd):
         log(player_login + ": " + text)
@@ -126,7 +127,7 @@ class Manager:
 
         new_map = find_map(short_name, self.state['maps'])
         self.state['current_map_index'] = new_map.pos
-        log("*** changed map to %s at index %i" % (short_name, self.state['current_map_index']))
+        log("Changed map to %s at index %i" % (short_name, self.state['current_map_index']), log_type="info")
 
     def cb_default(self, *args):
         # useful debug tool if you want to see all callbacks:
@@ -139,8 +140,9 @@ class Player:
         try:
             self.login = player_info['Login']
         except ValueError:
-            print player_info
-            log("***ERROR: no Login name found in player info!")
+            log("No Login name found in player info!", log_type="critical")
+            log("player_info = ", log_type="debug")
+            log(player_info, log_type="debug")
             quit()
         self.nick = player_info['NickName']
         self.safe_nick = sanitize(self.nick)

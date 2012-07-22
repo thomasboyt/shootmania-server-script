@@ -1,8 +1,22 @@
 import string
 import xmlrpclib
 import time
+import logging
 
 from exceptions import *
+
+log_timecode = time.strftime("%Y-%m-%d_%H-%M-%S")
+log_filename = "logs/log_%s.txt" % (log_timecode)
+logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', datefmt='%I:%M:%S %p', filename=log_filename, level=logging.DEBUG)
+
+log_levels = {
+    "chat": 0,
+    "debug": 10,
+    "info": 20,
+    "warning": 30,
+    "error": 40,
+    "critical": 50
+}
 
 
 # remove unicode
@@ -29,16 +43,21 @@ def search_maps(search, maps):
         raise MapNotFound()
 
 
-def log(print_string, should_print=True, has_timestamp=True):
+def log(message, has_timestamp=True, log_type="chat"):
     # sanitize doesn't work against objects that can be represented as string
-    if type(print_string) == str:
-        print_string = sanitize(print_string)
-    # to-do: actually log to a file here
-    if has_timestamp:
-        timestamp = time.strftime("[%H:%M:%S] ")
-        print_string = str(timestamp) + print_string
-    if should_print == True:
-        print print_string
+    if type(message) == str:
+        message = sanitize(message)
+
+    log_type = log_type.lower()
+    if log_type in log_levels:
+        level_num = log_levels[log_type]
+        logging.log(level_num, message)
+        if has_timestamp:
+            timestamp = time.strftime("[%H:%M:%S] ")
+            message = str(timestamp) + message
+        print message
+    else:
+        raise ValueError()
 
 
 def api_error(err):

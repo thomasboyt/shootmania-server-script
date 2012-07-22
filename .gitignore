@@ -2,6 +2,8 @@ config.json
 plugins/goons.py
 plugins/manialinks/goon/
 db/
+logs/
+
 
 # below autogenned from github
 

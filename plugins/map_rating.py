@@ -72,10 +72,10 @@ class MapRating(Plugin):
             map_name = map_info['FileName']
         # debug, remove when done
         except KeyError:
-            print "*** ERR: KeyError when trying to dislike map"
-            print "map_info = "
-            print map_info
-            quit()
+            log("KeyError when trying to dislike map", log_type="error")
+            log("map_info = ", log_type="debug")
+            log(map_info, log_type="debug")
+
         try:
             self._rate_map(caller, 0, map_name)
         except AlreadyVoted:
@@ -92,6 +92,7 @@ class MapRating(Plugin):
     def com_save_votes(self, state, caller):
         self.map_file.truncate()
         json.dump(self.map_votes, self.map_file)
+        self.map_file.flush()
 
     def cb_advertise(self, *args):
         self.server.ChatSendServerMessage("Make sure to /like or /dislike this map to decide whether it stays in rotation!")

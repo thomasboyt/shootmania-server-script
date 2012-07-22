@@ -24,7 +24,7 @@ class Admin(Plugin):
         self.add_command("kick", self.com_kick, requires_admin=True, has_arg=True)
         self.add_command("ban", self.com_ban, requires_admin=True, has_arg=True)
         #self.add_command("unban", self.com_unban, requires_admin=True, has_arg=True)
-        #self.add_command("clearbands", self.clear_bans, requires_admin=True, has_arg=False)
+        #self.add_command("clearbans", self.clear_bans, requires_admin=True, has_arg=False)
         #self.add_command("getbans", self_get_ban_list, requires_admin=True, has_arg=False)
 
         self.add_command("echo", self.com_echo, requires_admin=True, has_arg=True)
@@ -93,7 +93,6 @@ class Admin(Plugin):
             server.ChatSendServerMessage("Notice: %s set '%s' to %s." % (caller_nick, key, value))
         except Fault as e:
             if e.faultCode == -1000:
-                print e.faultString
                 server.ChatSendServerMessageToLogin("Setting '%s' not found in current script" % (key), caller)
 
     ### Basic server settings ###

@@ -61,7 +61,7 @@ def dump_state(server, state):
         for player in players:
             log("%s %s is connected as %s" % (player.role, player.login, player.safe_nick), has_timestamp=False)
     else:
-        log("No players connected.")
+        log("No players connected.", has_timestamp=False)
 
     log("\nMaps (%i total)" % (len(maps)), has_timestamp=False)
     log("---------+----------------------------------------------------", has_timestamp=False)

@@ -61,14 +61,12 @@ class Manager:
 
     ### Internal ###
 
-    def get_player_count(self):
-        return len(self.sm.GetPlayerList(100, 0))
-
     def sync(self):
         players_list = self.sm.GetPlayerList(100, 0)
         for player_info in players_list:
-            self.state["players"][player_info['Login']] = Player(player_info,
-                self)
+            login = player_info['Login']
+            if login != self.config["server_login"]:
+                self.state["players"][login] = Player(player_info, self)
 
         self.state['current_map_index'] = self.sm.GetCurrentMapIndex()
 

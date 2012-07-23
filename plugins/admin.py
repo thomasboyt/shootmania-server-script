@@ -11,6 +11,7 @@ class Admin(Plugin):
         self.add_command("skip", self.com_skip_map, requires_admin=True, has_arg=False)
         self.add_command("getmodesettings", self.com_get_mode_settings, requires_admin=True, has_arg=False)
         self.add_command("setmodesetting", self.com_set_mode_setting, requires_admin=True, has_arg=True)
+        self.add_command("reloadmatchsettings", self.com_reload_match_settings, requires_admin=True, has_arg=False)
         #self.add_command("restartmap", self.restart_map, requires_admin=True, has_arg=False)
 
         self.add_command("setservername", self.com_set_server_name, requires_admin=True, has_arg=True)
@@ -94,6 +95,13 @@ class Admin(Plugin):
         except Fault as e:
             if e.faultCode == -1000:
                 server.ChatSendServerMessageToLogin("Setting '%s' not found in current script" % (key), caller)
+
+    def com_reload_match_settings(self, state, caller):
+        mode = self.server.GetScriptName()['CurrentValue']
+        mode = mode[:-11]  # remove ".Script.txt"
+        match_settings = "MatchSettings/SMStorm" + mode + ".txt"
+        print match_settings
+        self.server.LoadMatchSettings(match_settings)
 
     ### Basic server settings ###
 

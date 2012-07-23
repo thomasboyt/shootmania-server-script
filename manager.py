@@ -59,6 +59,7 @@ class Manager:
         self.cb_handler.add("ManiaPlanet.PlayerConnect", self.cb_player_connect)
         self.cb_handler.add("ManiaPlanet.PlayerDisconnect", self.cb_player_disconnect)
         self.cb_handler.add("ManiaPlanet.BeginMap", self.cb_begin_map)
+        self.cb_handler.add("ManiaPlanet.MapListModified", self.cb_map_list_modified)
 
     ### Internal ###
 
@@ -128,6 +129,11 @@ class Manager:
         new_map = find_map(short_name, self.state['maps'])
         self.state['current_map_index'] = new_map.pos
         log("Changed map to %s at index %i" % (short_name, self.state['current_map_index']), log_type="info")
+
+    def cb_map_list_modified(self, cur_map_index, next_map_index, is_list_modified):
+        if is_list_modified == True:
+            log("Map list modified", log_type="debug")
+            self.sync()
 
     def cb_default(self, *args):
         # useful debug tool if you want to see all callbacks:

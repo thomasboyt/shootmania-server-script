@@ -1,12 +1,19 @@
 #!/usr/bin/python
 
 import Gbx
-import logging
 from collections import OrderedDict
 
 from plugins.util.plugin import plugin_loader
 from plugins.util.exceptions import *
 from plugins.util.helpers import *
+
+
+def ordered_to_dict(ordered_dict):
+    reg_dict = dict(ordered_dict)
+    for key, value in reg_dict.iteritems():
+        if isinstance(value, OrderedDict):
+            reg_dict[key] = ordered_to_dict(value)
+    return reg_dict
 
 
 class Manager:
@@ -196,7 +203,7 @@ if __name__ == '__main__':
         quit()
 
     try:
-        config = json.loads(config_file.read(), object_pairs_hook=OrderedDict)
+        ordered_config = json.loads(config_file.read(), object_pairs_hook=OrderedDict)
     except ValueError as e:
         print "Error parsing your config file:"
         print e
@@ -204,6 +211,11 @@ if __name__ == '__main__':
         quit()
 
     config_file.close()
+
+    # the plugins are the only place where order matters, and XMLRPClib can't deal with OrderedDicts, so we convert everything else back to a regular dict
+    plugins = ordered_config['plugins']
+    config = ordered_to_dict(ordered_config)
+    config['plugins'] = plugins
 
     #todo: make an args vs. config key dictionary, iterate over that
     if args.name:

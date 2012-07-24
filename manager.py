@@ -2,6 +2,7 @@
 
 import Gbx
 from collections import OrderedDict
+import os
 
 from plugins.util.plugin import plugin_loader
 from plugins.util.exceptions import *
@@ -224,6 +225,9 @@ if __name__ == '__main__':
         config['server_config']['password'] = args.password
     if args.mode:
         config['server_config']['default_mode'] = args.mode
+
+    init_log()
+    init_db()
 
     manager = Manager(config)
     while 1:

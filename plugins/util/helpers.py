@@ -2,12 +2,9 @@ import string
 import xmlrpclib
 import time
 import logging
+import os
 
 from exceptions import *
-
-log_timecode = time.strftime("%Y-%m-%d_%H-%M-%S")
-log_filename = "logs/log_%s.txt" % (log_timecode)
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', datefmt='%I:%M:%S %p', filename=log_filename, level=logging.DEBUG)
 
 log_levels = {
     "chat": 0,
@@ -17,6 +14,20 @@ log_levels = {
     "error": 40,
     "critical": 50
 }
+
+
+def init_log():
+    if not os.path.exists("logs/"):
+        os.makedirs("logs")
+
+    log_timecode = time.strftime("%Y-%m-%d_%H-%M-%S")
+    log_filename = "logs/log_%s.txt" % (log_timecode)
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', datefmt='%I:%M:%S %p', filename=log_filename, level=logging.DEBUG)
+
+
+def init_db():
+    if not os.path.exists("db"):
+        os.makedirs("db")
 
 
 # remove unicode
